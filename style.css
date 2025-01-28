@@ -658,15 +658,15 @@ body {
 
     .cardContainer {
         display: flex;
-        flex-wrap: wrap;
-    
+       
         gap: 35px;
         max-width: 68vw;
         max-height: 300px;
-        /* overflow-x: scroll; */
+        overflow-x: scroll;
         /* Enable horizontal scroll */
-        /* overflow-y: hidden; */
+        overflow-y: hidden;
         /* Disable vertical scroll */
+        max-height: 30vh;
     }
     
 }
