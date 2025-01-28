@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="40" height="40">
+  <!-- Circle background -->
+  <circle cx="50" cy="50" r="50" fill="#1DB954" />
+  <!-- Right triangle -->
+  <polygon points="40,30 40,70 65,50" fill="white" />
+  <!-- Line for the right edge -->
+  <rect x="65" y="30" width="5" height="40" fill="white" />
+</svg>
