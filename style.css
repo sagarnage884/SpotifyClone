@@ -188,7 +188,7 @@ body {
     width: 25%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
     align-items: center;
     position: relative;
 
@@ -327,6 +327,10 @@ body {
     display: flex;
     flex-direction: column;
     gap: 25px;
+    /* height: auto; */
+    height: 90vh;
+    max-width: 72%;
+   
 
 }
 
@@ -362,7 +366,7 @@ body {
 .Recommended {
 
     color: white;
-    margin-left: 14px;
+    margin-left: 90px;
     font-size: 28px;
     font-weight: 700;
     font-family: "Flow Circular", system-ui;
@@ -396,8 +400,7 @@ body {
     min-height: 240px;
     position: relative;
     color: white;
-
-
+    max-width: 264px;
     max-height: 400px;
 
 }
@@ -658,16 +661,53 @@ body {
 
     .cardContainer {
         display: flex;
+        flex-wrap: wrap;
+        /* justify-content: center; */
+        justify-content: flex-start;
+        align-items: center;
+        margin-left: 50px;
        
-        gap: 35px;
-        max-width: 68vw;
-        max-height: 300px;
-        overflow-x: scroll;
+        gap: 40px;
+        width: 90%;
+        height: 100%;
+     
+        /* overflow-x: scroll; */
         /* Enable horizontal scroll */
-        overflow-y: hidden;
+        /* overflow-y: hidden; */
         /* Disable vertical scroll */
-        max-height: 30vh;
+        
+        overflow-y: auto;
     }
+    /* .cardContainerContainer{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        overflow-x: hidden;
+            overflow-y: scroll;
+    } */
+       
+   .cardContainerContainer {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       width: 100%;
+       overflow-x: hidden;
+       overflow-y: scroll;
+
+       /* Hide scrollbar for Chrome, Safari, and Edge */
+       scrollbar-width: none;
+       /* Firefox */
+       -ms-overflow-style: none;
+       /* Internet Explorer/Edge */
+   }
+
+   /* Hide scrollbar for Webkit browsers (Chrome, Safari, Opera) */
+   .cardContainerContainer::-webkit-scrollbar {
+       width: 0;
+       height: 0;
+       display: none;
+   }
     
 }
 
