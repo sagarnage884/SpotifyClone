@@ -1,44 +1,68 @@
-
+const token = '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';
 
 let folderName = "f3";
 
+async function fetchSongs(folderN) {
+    try {
+
+        let response = await fetch(`https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs/${folderN}`, {
+            headers: {
+                'Authorization': `token ${token}`
+            }
+        });
+        let data = await response.json();
+
+
+        let songs = data.filter(item => item.type === "file" && item.name.endsWith('.mp3'))
+            .map(item => ({
+                name: item.name,
+
+                src: `https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/${item.path}`
+            }));
+
+        return songs;
+
+
+    } catch (error) {
+        console.error("Error fetching songs:", error);
+    }
+}
+
 async function getSongs(folderN) {
     folderName = folderN;
-    let link = `/songs/${folderName}/`;
-    let respones = await fetch(link);
+
+    let response = await fetch(`https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs/${folderN}`, {
+        headers: {
+            'Authorization': `token ${token}`
+        }
+    });
+
+    let data = await response.json();
+
+    let names = data.map(item => item.name);
 
 
-    let myHtml = await respones.text();
-
-
-    let myEle = document.createElement("div");
-
-    myEle.innerHTML = myHtml;
-
-    let songsArray = myEle.getElementsByTagName("a");
 
     let songs = [];
 
-    for (i = 0; i < songsArray.length; i++) {
-        if (songsArray[i].href.endsWith(".mp3"))
-            songs.push(songsArray[i].href);
+    for (i = 0; i < names.length; i++) {
+        if (names[i].includes(".mp3"))
+            songs.push(names[i]);
     }
+    console.log(songs);
+
 
     return songs;
 }
-
-
-
-
-
 
 
 let currentSong = new Audio();
 
 function playSong(name) {
     currentSong.pause();
+    // 'https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/songs/f1/bulley.mp3'
 
-    currentSong.src = `/songs/${folderName}/` + name;
+    currentSong.src = `https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/songs/${folderName}/` + name;
 
     document.querySelector("#play").src = "Mysvgs/pauseButton.svg";
     document.querySelector(".songName").innerHTML = `${name}`;
@@ -71,7 +95,7 @@ function playSong(name) {
             vol.value = 0;
 
         }
-        console.log("Hello");
+
 
     })
 }
@@ -175,23 +199,24 @@ function showTime(song) {
 
 let mySongs = []
 
-
+let mySongsObj = []
 async function main(folderN) {
     let songs = await getSongs(folderN);
+
     mySongs = songs;
 
+    mySongsObj = await fetchSongs(folderN);
 
     let playlist = document.querySelector(".myPlaylist").getElementsByTagName("ul")[0];
     playlist.innerHTML = "";
 
     for await (const song of songs) {
-        let name = song.split(`/${folderName}/`)[1];
-        name = name.split("%20").join(" ");
+
         playlist.innerHTML += `
             <li>
                 <div class="info">
                     <img src="MySvgs/musicIcon.svg" alt="">
-                    <span>${name}</span>
+                    <span>${song}</span>
                 </div>
                 <div>
                     <span>play now</span>
@@ -200,7 +225,7 @@ async function main(folderN) {
             </li>`;
     }
 
-    // Add event listeners for playlist items
+
     let songNames = Array.from(document.querySelector(".myPlaylist").getElementsByTagName("li"));
     songNames.forEach((element) => {
         let name = element.querySelector(".info").children[1];
@@ -238,7 +263,7 @@ async function main(folderN) {
         });
     }
 
-    // Reset and attach new event listeners for control buttons
+
     document.querySelector("#play").onclick = () => {
         if (currentSong.paused) {
             currentSong.play();
@@ -249,22 +274,46 @@ async function main(folderN) {
         }
     };
 
+
+
     document.querySelector("#prev").onclick = () => {
-        let i = mySongs.indexOf(currentSong.src);
-        if (i - 1 >= 0) {
-            playSong(mySongs[i - 1].split(`/${folderName}/`)[1].split("%20").join(" ").trim());
-        } else {
-            playSong(mySongs[0].split(`/${folderName}/`)[1].split("%20").join(" ").trim());
+
+        if (currentSong) {
+            let sr = currentSong.src.split("songs")[1].split("/")[2].split("%20").join(" ").trim();
+            let i = 0;
+            for (; i < mySongsObj.length; i++) {
+                if (sr == mySongsObj[i].name)
+                    break;
+            }
+
+
+            if (i - 1 >= 0) {
+                playSong(mySongsObj[i - 1].name);
+            } else {
+                playSong(mySongsObj[0].name);
+            }
         }
     };
 
     document.querySelector("#next").onclick = () => {
-        let i = mySongs.indexOf(currentSong.src);
-        if (i + 1 < mySongs.length) {
-            playSong(mySongs[i + 1].split(`/${folderName}/`)[1].split("%20").join(" ").trim());
-        } else {
-            playSong(mySongs[0].split(`/${folderName}/`)[1].split("%20").join(" ").trim());
+
+        if (currentSong) {
+
+            let sr = currentSong.src.split("songs")[1].split("/")[2].split("%20").join(" ").trim();
+            let i = 0;
+            for (; i < mySongsObj.length; i++) {
+                if (sr == mySongsObj[i].name)
+                    break;
+            }
+
+
+            if (i + 1 < mySongsObj.length) {
+                playSong(mySongsObj[i + 1].name);
+            } else {
+                playSong(mySongsObj[0].name);
+            }
         }
+
     };
 }
 
@@ -284,10 +333,6 @@ async function loadPlaylists() {
 
         })
 
-
-
-
-
     })
         ;
 }
@@ -295,29 +340,58 @@ async function loadPlaylists() {
 
 async function displayPlaylist(params) {
 
-    let temp = await fetch(`/songs/`);
-    let text = await temp.text();
-    let a = document.createElement("div");
-    a.innerHTML = text;
-
-    let names = a.getElementsByTagName("a");
-    let fold = []
-    Array.from(names).forEach((e) => {
-
-        if (e.href.split("/songs/")[1])
-            fold.push(e.href.split("/songs/")[1].split("/")[0]);
+    let temp = document.createElement("div");
 
 
-    });
+    await fetch("https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs", {
+        headers: {
+            'Authorization': `token ${token}`
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            let textData = data.map(file => file.name).join("\n");
+            temp.textContent = textData;
+        })
+        .catch(error => console.error("Error:", error));
+
+    let s = temp.textContent
+
+    let name = s.split("\n");
+    let fold = [];
+
+    Array.from(name).forEach((e) => {
+        if (!e.includes(".md"))
+            fold.push(e);
+    }
+
+    )
 
     let ele = document.querySelector(".cardContainer");
     ele.innerHTML = "";
 
     for (i = 0; i < fold.length; i++) {
-        let myJsn = await fetch(`/songs/${fold[i]}/info.json`);
-        let a = await myJsn.json();
+        let myJsn;
+
+
+        await fetch("https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs/f1/info.json", {
+            headers: {
+                'Authorization': `token ${token}`
+            }
+        })
+            .then(response => response.json()) // Convert response to JSON
+            .then(data => {
+                const jsonContent = atob(data.content); // Decode Base64 content
+                myJsn = JSON.parse(jsonContent);
+
+            })
+            .catch(error => console.error("Error:", error));
+
+
+        let a = myJsn;
+
         ele.innerHTML = ele.innerHTML + `<div class="card1" data-folder = ${fold[i]} >
-            <img src="/songs/${fold[i]}/cover.jpg" alt="">
+            <img src="https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/songs/${fold[i]}/cover.jpg" alt="">
             <h2>${a.title}</h2>
             <P>${a.description}</P>
             <div class="playButton">
@@ -332,9 +406,10 @@ async function displayPlaylist(params) {
 
     }
 
-
     loadPlaylists();
 }
+
+
 displayPlaylist();
 loadPlaylists();
 
