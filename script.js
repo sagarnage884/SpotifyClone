@@ -47,10 +47,10 @@ let currentSong = new Audio();
 
 function playSong(name) {
     currentSong.pause();
-   
+
     currentSong.src = `songs/${folderName}/${name}`
 
-    document.querySelector("#play").src = "Mysvgs/pauseButton.svg";
+    document.querySelector("#play").src = "/Mysvgs/pauseButton.svg";
     document.querySelector(".songName").innerHTML = `${name}`;
     document.querySelector("#tm").innerHTML = `00:00 / 00:00`;
 
@@ -70,13 +70,13 @@ function playSong(name) {
     let icon = document.querySelector(".volumeTracker").children[0];
     icon.addEventListener("click", (e) => {
         if (currentSong.volume == 0) {
-            icon.src = "Mysvgs/volume.svg?v=" + Date.now();
+            icon.src = "/Mysvgs/volume.svg?v=" + Date.now();
             currentSong.volume = 0.3;
             vol.value = 30;
 
         }
         else {
-            icon.src = "Mysvgs/mute.svg?v=" + Date.now();
+            icon.src = "/Mysvgs/mute.svg?v=" + Date.now();
             currentSong.volume = 0;
             vol.value = 0;
 
@@ -255,10 +255,10 @@ async function main(folderN) {
     document.querySelector("#play").onclick = () => {
         if (currentSong.paused) {
             currentSong.play();
-            document.querySelector("#play").src = "Mysvgs/pauseButton.svg?v=" + Date.now() ;
+            document.querySelector("#play").src = "/Mysvgs/pauseButton.svg?v=" + Date.now();
         } else {
             currentSong.pause();
-            document.querySelector("#play").src = "Mysvgs/playButton.svg?v=" + Date.now();
+            document.querySelector("#play").src = "/Mysvgs/playButton.svg?v=" + Date.now();
         }
     };
 
