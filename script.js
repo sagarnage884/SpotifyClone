@@ -1,53 +1,40 @@
-const token = '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';
+
 
 let folderName = "f3";
 
-async function fetchSongs(folderN) {
-    try {
+let mySongsMain = {
+    f1: ["Chana MereYa.mp3", "bulley.mp3"],
+    f2: ["Dil meri na sune.mp3", "One Direction night changes.mp3", "tere fittor.mp3"],
+    f3: ["A dil he mushkil.mp3", "Ankho me teri Ajab si .mp3", "Apan Her Din Aise Jiyo.mp3", "Dekha Hajaro Dafa.mp3", "Ye Tune Kay Kiya.mp3"]
+};
 
-        let response = await fetch(`https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs/${folderN}`, {
-            headers: {
-                'Authorization': `token ${token}`
-            }
-        });
-        let data = await response.json();
+let myFolderMain = ["f1", "f2", "f3"];
 
+function fetchSongs(folderN) {
 
-        let songs = data.filter(item => item.type === "file" && item.name.endsWith('.mp3'))
-            .map(item => ({
-                name: item.name,
+    let sn = getSongs(folderN);
 
-                src: `https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/${item.path}`
-            }));
+    let temp = Array.from(sn).map(name => ({
+        name: name,
+        src: `songs/${folderN}/${name}`
+    }));
 
-        return songs;
+    console.log(temp);
 
+    return temp;
 
-    } catch (error) {
-        console.error("Error fetching songs:", error);
-    }
 }
 
-async function getSongs(folderN) {
+function getSongs(folderN) {
     folderName = folderN;
-
-    let response = await fetch(`https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs/${folderN}`, {
-        headers: {
-            'Authorization': `token ${token}`
-        }
-    });
-
-    let data = await response.json();
-
-    let names = data.map(item => item.name);
-
-
 
     let songs = [];
 
-    for (i = 0; i < names.length; i++) {
-        if (names[i].includes(".mp3"))
-            songs.push(names[i]);
+
+
+    for (i = 0; i < mySongsMain[`${folderN}`].length; i++) {
+        songs.push(mySongsMain[`${folderN}`][i]);
+
     }
     console.log(songs);
 
@@ -60,9 +47,8 @@ let currentSong = new Audio();
 
 function playSong(name) {
     currentSong.pause();
-    // 'https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/songs/f1/bulley.mp3'
-
-    currentSong.src = `https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/songs/${folderName}/` + name;
+   
+    currentSong.src = `songs/${folderName}/${name}`
 
     document.querySelector("#play").src = "Mysvgs/pauseButton.svg";
     document.querySelector(".songName").innerHTML = `${name}`;
@@ -95,6 +81,8 @@ function playSong(name) {
             vol.value = 0;
 
         }
+
+
 
 
     })
@@ -198,14 +186,14 @@ function showTime(song) {
 
 
 let mySongs = []
-
 let mySongsObj = []
+
 async function main(folderN) {
-    let songs = await getSongs(folderN);
+    let songs = getSongs(folderN);
 
     mySongs = songs;
 
-    mySongsObj = await fetchSongs(folderN);
+    mySongsObj = fetchSongs(folderN);
 
     let playlist = document.querySelector(".myPlaylist").getElementsByTagName("ul")[0];
     playlist.innerHTML = "";
@@ -340,58 +328,21 @@ async function loadPlaylists() {
 
 async function displayPlaylist(params) {
 
-    let temp = document.createElement("div");
 
-
-    await fetch("https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs", {
-        headers: {
-            'Authorization': `token ${token}`
-        }
-    })
-        .then(response => response.json())
-        .then(data => {
-            let textData = data.map(file => file.name).join("\n");
-            temp.textContent = textData;
-        })
-        .catch(error => console.error("Error:", error));
-
-    let s = temp.textContent
-
-    let name = s.split("\n");
-    let fold = [];
-
-    Array.from(name).forEach((e) => {
-        if (!e.includes(".md"))
-            fold.push(e);
-    }
-
-    )
+    let fold = myFolderMain;
 
     let ele = document.querySelector(".cardContainer");
     ele.innerHTML = "";
 
     for (i = 0; i < fold.length; i++) {
-        let myJsn;
+        let myJsn = await fetch(`songs/${fold[i]}/info.json`);
 
+        let a = await myJsn.json();
+        console.log(a);
 
-        await fetch("https://api.github.com/repos/sagarnage884/SpotifyClone/contents/songs/f1/info.json", {
-            headers: {
-                'Authorization': `token ${token}`
-            }
-        })
-            .then(response => response.json()) // Convert response to JSON
-            .then(data => {
-                const jsonContent = atob(data.content); // Decode Base64 content
-                myJsn = JSON.parse(jsonContent);
-
-            })
-            .catch(error => console.error("Error:", error));
-
-
-        let a = myJsn;
 
         ele.innerHTML = ele.innerHTML + `<div class="card1" data-folder = ${fold[i]} >
-            <img src="https://raw.githubusercontent.com/sagarnage884/SpotifyClone/main/songs/${fold[i]}/cover.jpg" alt="">
+            <img src="songs/${fold[i]}/cover.jpg" alt="">
             <h2>${a.title}</h2>
             <P>${a.description}</P>
             <div class="playButton">
