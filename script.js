@@ -50,9 +50,9 @@ function playSong(name) {
 
     currentSong.src = `songs/${folderName}/${name}`
 
-   
+
     // document.querySelector("#play").src = "/MySvgs/pauseButton.svg";
-    document.querySelector("#play").src = "/MySvgs/pauseButton.svg" ;
+    document.querySelector("#play").src = "MySvgs/pauseButton.svg";
     document.querySelector(".songName").innerHTML = `${name}`;
     document.querySelector("#tm").innerHTML = `00:00 / 00:00`;
 
@@ -72,13 +72,13 @@ function playSong(name) {
     let icon = document.querySelector(".volumeTracker").children[0];
     icon.addEventListener("click", (e) => {
         if (currentSong.volume == 0) {
-            icon.src = "/MySvgs/volume.svg";
+            icon.src = "MySvgs/volume.svg";
             currentSong.volume = 0.3;
             vol.value = 30;
 
         }
         else {
-            icon.src = "/MySvgs/mute.svg" ;
+            icon.src = "MySvgs/mute.svg";
             currentSong.volume = 0;
             vol.value = 0;
 
@@ -264,7 +264,7 @@ async function main(folderN) {
         }
     };
 
-    
+
 
     document.querySelector("#prev").onclick = () => {
 
